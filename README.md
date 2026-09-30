@@ -1,51 +1,104 @@
 # SunsetDoctor
 
-SunsetDoctor scans a codebase for OpenAI models, APIs, and workflow features that are approaching published shutdown dates.
+**Detect OpenAI shutdown risks → generate a migration plan → safely fix what can be automated.**
 
-## Why this exists
+SunsetDoctor scans source/config files for deprecated OpenAI models, APIs, reusable prompts, Evals usage, and Agent Builder-hosted workflows. It reports exact file/line evidence, shutdown dates, migration guidance, CI annotations, and safe model-ID replacements.
 
-Deprecation deadlines can silently become production outages. SunsetDoctor turns official shutdown notices into repo-level findings with file/line locations, countdowns, migration guidance, CI failure thresholds, JSON, and HTML reports.
+> SunsetDoctor is intentionally conservative: it auto-fixes only unambiguous model-ID replacements. Architectural migrations stay human-reviewed.
 
-## Current MVP (v0.5.0)
+## Why
 
-- scans source and config files for known deprecated OpenAI references
-- reports file + line + excerpt
-- shows shutdown date and live days remaining
-- suggests the documented migration/replacement
-- supports text and JSON output
-- generates a standalone HTML migration report
-- configurable CI failure threshold
-- GitHub Action support on Node 24
-- GitHub Action outputs for finding count and report path
-- safe automatic model-ID migrations with `--fix`
-- preview migrations without changing files with `--dry-run`
-- automated Node test suite and GitHub CI
-- overlap-safe matching for model aliases and snapshots
-- registry coverage through February 2027
-- migration diff preview with `--diff`
-- GitHub Actions file/line annotations for deprecations
-- CI security regression tests for common credential/token leaks
-- explicit least-privilege GitHub Actions permissions
-- migration-surface detection for reusable prompt IDs, OpenAI Evals usage, and Agent Builder hosted workflow IDs
-- Markdown migration plans with file/line evidence, official guidance, and review checklists
+A model or platform shutdown can turn into a production incident if the deprecated reference is buried in code, CI, config, or an old integration.
 
-## CLI
+SunsetDoctor is designed to answer four questions:
+
+1. **What will break?**
+2. **Where is it used?**
+3. **When does it shut down?**
+4. **What can be fixed automatically vs. what needs engineering work?**
+
+## What it detects
+
+- deprecated OpenAI model IDs and snapshots
+- overdue shutdowns
+- reusable prompt IDs such as `pmpt_...`
+- OpenAI Evals API / SDK usage
+- Agent Builder hosted workflow IDs such as `wf_...`
+- ChatKit hosted workflow configuration
+- known API/platform shutdown references
+## Quick start
+
+### Run locally
 
 ```bash
-node src/index.js scan /path/to/repo
-node src/index.js scan /path/to/repo --json
-node src/index.js scan /path/to/repo --html sunset-doctor-report.html
-node src/index.js scan /path/to/repo --fail-on high
-node src/index.js scan /path/to/repo --dry-run
-node src/index.js scan /path/to/repo --fix
-node src/index.js scan /path/to/repo --diff
-node src/index.js scan /path/to/repo --plan sunset-doctor-migration-plan.md
+git clone https://github.com/avisekyadav2009-hue/sunset-doctor.git
+cd sunset-doctor
+node src/index.js scan /path/to/your/repo
 ```
 
-### Safe fixes
+Useful modes:
 
-`--dry-run` previews automatic migrations without changing files. `--diff` presents safe replacements as BEFORE → AFTER changes without editing the project. `--fix` only rewrites unambiguous deprecated model IDs with a single documented replacement. API migrations, platform migrations, and choices with multiple possible replacements remain findings for human review.
-### Failure thresholds
+```bash
+# machine-readable output
+node src/index.js scan /path/to/repo --json
+
+# HTML report
+node src/index.js scan /path/to/repo --html sunset-doctor-report.html
+
+# Markdown migration checklist
+node src/index.js scan /path/to/repo --plan sunset-doctor-migration-plan.md
+
+# show safe BEFORE → AFTER migrations without editing
+node src/index.js scan /path/to/repo --diff
+
+# preview safe automatic replacements
+node src/index.js scan /path/to/repo --dry-run
+
+# apply only unambiguous model-ID replacements
+node src/index.js scan /path/to/repo --fix
+```
+
+### GitHub Action
+
+```yaml
+- name: Scan OpenAI shutdown risks
+  uses: avisekyadav2009-hue/sunset-doctor@v0.5.1
+  with:
+    path: .
+    fail-on: critical
+    report: sunset-doctor-report.html
+    plan: sunset-doctor-migration-plan.md
+```
+The Action exposes `findings`, `fixes`, `report`, and `plan` outputs and emits file/line annotations directly in GitHub Actions.
+
+## Demo
+
+The repository contains an intentionally outdated OpenAI integration at:
+
+```text
+examples/legacy-openai-app/
+```
+
+Run:
+
+```bash
+npm run demo
+```
+
+SunsetDoctor currently finds four different migration classes in that tiny app:
+
+```text
+[CRITICAL] reusable prompt object
+[CRITICAL] Agent Builder hosted workflow
+[CRITICAL] OpenAI Evals SDK usage
+[HIGH]     deprecated GPT-5 snapshot
+```
+
+For the model snapshot, SunsetDoctor can propose a safe replacement. For reusable prompts, Agent Builder, and Evals it generates a migration checklist instead of blindly rewriting application architecture.
+
+See [docs/demo.md](docs/demo.md) for a walkthrough.
+
+## CI failure thresholds
 
 `--fail-on` accepts:
 
@@ -57,33 +110,66 @@ node src/index.js scan /path/to/repo --plan sunset-doctor-migration-plan.md
 - `overdue`
 - `never`
 
-The default is `critical`.
+Default: `critical`.
 
-## GitHub Action
+## Safety
 
-```yaml
-- name: Scan OpenAI deprecations
-  uses: avisekyadav2009-hue/sunset-doctor@v0.5.0
-  with:
-    path: .
-    fail-on: critical
-    report: sunset-doctor-report.html
-    plan: sunset-doctor-migration-plan.md
+SunsetDoctor does **not** need your OpenAI API key to scan a repository.
+
+The project includes:
+
+- regression tests for common API-key/token/private-key signatures
+- ignore rules for `.env`, certificates, keys, and credential files
+- least-privilege GitHub Actions permissions
+- conservative auto-fix rules
+- JSON output isolation from GitHub annotation output
+
+See [SECURITY.md](SECURITY.md).
+## Migration plans
+
+A generated Markdown plan includes:
+
+- exact file + line
+- detected deprecated surface
+- shutdown date
+- recommended replacement/migration direction
+- whether a safe auto-fix exists
+- official guidance link
+- review checklist for architectural migrations
+
+This makes SunsetDoctor useful as a **migration-audit tool**, not only a deprecation warning.
+
+## Current coverage
+
+The bundled registry tracks 65 OpenAI deprecation/shutdown entries and is checked against OpenAI's official deprecation documentation before releases.
+
+Deprecation schedules can change. Treat the bundled registry as a release snapshot and re-check official documentation for high-stakes migrations.
+
+## Need migration help?
+
+If SunsetDoctor finds an OpenAI migration that is larger than a model-ID replacement, open a **Migration help** issue with sanitized findings. Do not paste secrets, API keys, private source code, or customer data.
+
+We can use the report to scope work such as:
+
+- model/API migrations
+- reusable prompt migration
+- Agent Builder → Agents SDK migration
+- Evals migration
+- ChatKit workflow migration
+- migration validation and CI hardening
+
+## Development
+
+```bash
+node --test ./tests/*.test.js
 ```
 
-The Action exposes `findings`, `fixes`, `report`, and `plan` outputs so a workflow can upload the HTML report and Markdown migration plan or use counts in later steps.
+The test suite covers scanning, safe fixes, migration plans, GitHub Action behavior, JSON integrity, overdue shutdowns, and secret-safety regressions.
 
-### Migration plan
+## Contributing
 
-The Markdown plan is intentionally conservative. SunsetDoctor will auto-fix only unambiguous model-ID replacements. Architectural migrations such as reusable prompt objects, Evals API usage, and Agent Builder-hosted workflows are detected with file/line evidence and converted into a human-review checklist instead of being rewritten blindly.
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## Registry
+## License
 
-The registry is sourced from OpenAI's official deprecation documentation. Before releases, entries should be rechecked against the official source because shutdown dates and recommended replacements can change.
-## Near-term roadmap
-
-1. Detect more high-confidence SDK/API migration surfaces.
-2. Validate safe changed code with repository tests where available.
-3. Add richer PR summaries/comments for migration plans.
-4. Publish the free scanner and GitHub Action publicly.
-5. Offer paid migration help for Agent Builder, reusable prompts, and Evals.
+MIT

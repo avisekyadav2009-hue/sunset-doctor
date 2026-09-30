@@ -1,7 +1,7 @@
 {
   "name": "sunset-doctor",
-  "version": "0.5.0",
-  "description": "Scan codebases for OpenAI APIs, models, and workflow features approaching deprecation deadlines.",
+  "version": "0.5.1",
+  "description": "Detect OpenAI shutdown risks, generate migration plans, and safely fix unambiguous model-ID deprecations.",
   "type": "module",
   "bin": {
     "sunset-doctor": "./src/index.js"
@@ -9,10 +9,36 @@
   "scripts": {
     "scan": "node ./src/index.js scan .",
     "test": "node --test ./tests/*.test.js",
-    "report": "node ./src/index.js scan ./fixtures --html ./sunset-doctor-report.html --fail-on never"
+    "report": "node ./src/index.js scan ./fixtures --html ./sunset-doctor-report.html --fail-on never",
+    "demo": "node ./src/index.js scan ./examples/legacy-openai-app --dry-run --plan ./sunset-doctor-migration-plan.md --html ./sunset-doctor-report.html --fail-on never"
   },
   "engines": {
     "node": ">=20"
+  },
+  "files": [
+    "src/",
+    "registry.json",
+    "action.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "openai",
+    "deprecation",
+    "migration",
+    "github-actions",
+    "llm",
+    "ci",
+    "agents",
+    "evals"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/avisekyadav2009-hue/sunset-doctor.git"
+  },
+  "homepage": "https://github.com/avisekyadav2009-hue/sunset-doctor#readme",
+  "bugs": {
+    "url": "https://github.com/avisekyadav2009-hue/sunset-doctor/issues"
   },
   "license": "MIT"
 }

@@ -1,0 +1,6 @@
+{
+  "name": "sunset-doctor-legacy-demo",
+  "private": true,
+  "type": "module",
+  "description": "Intentionally outdated OpenAI integration used to demonstrate SunsetDoctor."
+}
