@@ -13,6 +13,10 @@ inputs:
     description: Optional HTML report path
     required: false
     default: sunset-doctor-report.html
+  plan:
+    description: Optional Markdown migration plan path
+    required: false
+    default: sunset-doctor-migration-plan.md
 outputs:
   findings:
     description: Number of remaining deprecation findings
@@ -20,6 +24,8 @@ outputs:
     description: Number of safe automatic fixes identified/applied by the CLI
   report:
     description: Generated HTML report path
+  plan:
+    description: Generated Markdown migration plan path
 runs:
   using: node24
   main: src/index.js

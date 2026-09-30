@@ -2,6 +2,11 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import {
+  buildMigrationPlan,
+  renderMigrationPlanMarkdown,
+  scanMigrationSurfaces
+} from "./migration-plan.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const registry = JSON.parse(
@@ -116,7 +121,7 @@ function parseArgs() {
   const command = hasCommand ? args[0] : "scan";
   if (command !== "scan") {
     console.error(
-      "Usage: sunset-doctor scan [path] [--json] [--html FILE] [--fail-on LEVEL] [--fix] [--dry-run] [--diff]"
+      "Usage: sunset-doctor scan [path] [--json] [--html FILE] [--plan FILE] [--fail-on LEVEL] [--fix] [--dry-run] [--diff]"
     );
     process.exit(2);
   }
@@ -124,6 +129,7 @@ function parseArgs() {
   let targetArg = ".";
   let json = false;
   let htmlPath = null;
+  let planPath = null;
   let failOn = "critical";
   let fix = false;
   let dryRun = false;
@@ -134,6 +140,7 @@ function parseArgs() {
     const arg = args[i];
     if (arg === "--json") json = true;
     else if (arg === "--html") htmlPath = args[++i];
+    else if (arg === "--plan") planPath = args[++i];
     else if (arg === "--fail-on") failOn = (args[++i] || "").toLowerCase();
     else if (arg === "--fix") fix = true;
     else if (arg === "--dry-run") dryRun = true;
@@ -151,6 +158,7 @@ function parseArgs() {
       failOn
     ).toLowerCase();
     htmlPath = process.env.INPUT_REPORT || htmlPath;
+    planPath = process.env.INPUT_PLAN || planPath;
   }
 
   const validFail = new Set([
@@ -166,11 +174,16 @@ function parseArgs() {
     console.error("--html requires a file path.");
     process.exit(2);
   }
+  if (planPath === undefined) {
+    console.error("--plan requires a file path.");
+    process.exit(2);
+  }
 
   return {
     target: path.resolve(targetArg),
     json,
     htmlPath: htmlPath ? path.resolve(htmlPath) : null,
+    planPath: planPath ? path.resolve(planPath) : null,
     failOn,
     fix,
     dryRun,
@@ -379,9 +392,24 @@ function main() {
   const options = parseArgs();
   const files = walk(options.target);
   const before = scanFiles(files);
-  const preFixSummary = summarize(before);
+  const surfaceBefore = scanMigrationSurfaces(files)
+    .map((f) => ({ ...f, days_remaining: daysUntil(f.sunset) }));
+  const preFixSummary = summarize([...before, ...surfaceBefore]);
   const fixes = options.fix ? applySafeFixes(before, options.dryRun) : [];
-  const findings = options.fix && !options.dryRun ? scanFiles(files) : before;
+  const registryFindings = options.fix && !options.dryRun ? scanFiles(files) : before;
+  const surfaceFindings = options.fix && !options.dryRun
+    ? scanMigrationSurfaces(files).map((f) => ({ ...f, days_remaining: daysUntil(f.sunset) }))
+    : surfaceBefore;
+  const findings = [...registryFindings, ...surfaceFindings].sort((a, b) =>
+    a.sunset.localeCompare(b.sunset) ||
+    a.file.localeCompare(b.file) ||
+    a.line - b.line
+  );
+  const migrationPlan = buildMigrationPlan(
+    registryFindings,
+    surfaceFindings,
+    options.target
+  );
 
   const result = {
     target: options.target,
@@ -392,12 +420,24 @@ function main() {
     pre_fix_summary: preFixSummary,
     summary: summarize(findings),
     fixes,
+    registry_findings: registryFindings,
+    surface_findings: surfaceFindings,
+    migration_plan: migrationPlan,
     findings
   };
 
   if (options.htmlPath) {
     fs.mkdirSync(path.dirname(options.htmlPath), { recursive: true });
     fs.writeFileSync(options.htmlPath, renderHtml(result), "utf8");
+  }
+
+  if (options.planPath) {
+    fs.mkdirSync(path.dirname(options.planPath), { recursive: true });
+    fs.writeFileSync(
+      options.planPath,
+      renderMigrationPlanMarkdown(migrationPlan),
+      "utf8"
+    );
   }
 
   if (options.json) {
@@ -417,10 +457,14 @@ function main() {
   if (options.htmlPath && !options.json) {
     console.log(`HTML report: ${options.htmlPath}`);
   }
+  if (options.planPath && !options.json) {
+    console.log(`Migration plan: ${options.planPath}`);
+  }
 
   setActionOutput("findings", result.summary.total);
   setActionOutput("fixes", fixes.length);
   setActionOutput("report", options.htmlPath || "");
+  setActionOutput("plan", options.planPath || "");
   process.exit(shouldFail(findings, options.failOn) ? 1 : 0);
 }
 

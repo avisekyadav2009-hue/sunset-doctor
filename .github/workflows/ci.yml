@@ -30,8 +30,10 @@ jobs:
           path: ./fixtures
           fail-on: never
           report: ./sunset-doctor-report.html
+          plan: ./sunset-doctor-migration-plan.md
 
       - name: Verify Action outputs
         run: |
           test "${{ steps.doctor.outputs.findings }}" = "2"
           test -f ./sunset-doctor-report.html
+          test -f ./sunset-doctor-migration-plan.md
