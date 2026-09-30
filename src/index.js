@@ -142,7 +142,11 @@ function parseArgs() {
 
   if (process.env.GITHUB_ACTIONS === "true") {
     targetArg = process.env.INPUT_PATH || targetArg;
-    failOn = (process.env.INPUT_FAIL_ON || failOn).toLowerCase();
+    failOn = (
+      process.env["INPUT_FAIL-ON"] ||
+      process.env.INPUT_FAIL_ON ||
+      failOn
+    ).toLowerCase();
     htmlPath = process.env.INPUT_REPORT || htmlPath;
   }
 

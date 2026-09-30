@@ -10,10 +10,11 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "..");
 const cli = path.join(root, "src", "index.js");
 
-function run(args) {
+function run(args, env = {}) {
   return spawnSync(process.execPath, [cli, ...args], {
     cwd: root,
-    encoding: "utf8"
+    encoding: "utf8",
+    env: { ...process.env, ...env }
   });
 }
 
@@ -107,4 +108,16 @@ test("deprecated aliases do not match newer model prefixes", () => {
   assert.equal(result.status, 0, result.stderr);
   const report = JSON.parse(result.stdout);
   assert.equal(report.summary.total, 0);
+});
+
+test("GitHub Action reads hyphenated fail-on input", () => {
+  const result = run([], {
+    GITHUB_ACTIONS: "true",
+    INPUT_PATH: "./fixtures",
+    "INPUT_FAIL-ON": "never",
+    INPUT_REPORT: ""
+  });
+
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /Findings: 2/);
 });
