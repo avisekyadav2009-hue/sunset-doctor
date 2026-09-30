@@ -15,14 +15,16 @@
 - [x] Safe model-ID auto-fix + dry-run
 - [x] Overlap-safe alias matching
 - [x] Registry coverage through February 2027
-- [ ] PR annotations/comments
-- [ ] Published tagged release
+- [x] PR/file annotations in GitHub Actions
+- [x] Security regression tests + least-privilege CI
+- [x] Published tagged release (v0.3.0)
+- [ ] GitHub Release page
 
 ## Phase 2 — Migration assistant
 - [ ] Detect SDK version and API surface
 - [ ] Generate migration checklist
 - [x] Safe codemods for simple model identifier replacements
-- [ ] Diff mode: before/after findings
+- [x] Diff mode: before/after safe migrations
 - [ ] Validate changed code with tests where available
 
 ## Phase 3 — Paid product

@@ -1,6 +1,6 @@
 {
   "name": "sunset-doctor",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Scan codebases for OpenAI APIs, models, and workflow features approaching deprecation deadlines.",
   "type": "module",
   "bin": {
