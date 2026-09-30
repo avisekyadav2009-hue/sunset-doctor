@@ -1,0 +1,18 @@
+{
+  "name": "sunset-doctor",
+  "version": "0.2.0",
+  "description": "Scan codebases for OpenAI APIs, models, and workflow features approaching deprecation deadlines.",
+  "type": "module",
+  "bin": {
+    "sunset-doctor": "./src/index.js"
+  },
+  "scripts": {
+    "scan": "node ./src/index.js scan .",
+    "test": "node ./src/index.js scan ./fixtures --fail-on never",
+    "report": "node ./src/index.js scan ./fixtures --html ./sunset-doctor-report.html --fail-on never"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT"
+}

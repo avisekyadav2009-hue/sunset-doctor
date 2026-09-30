@@ -1,0 +1,254 @@
+[
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "babbage-002",
+    "sunset": "2026-09-28",
+    "replacement": "gpt-5.6-terra",
+    "severity": "critical",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "davinci-002",
+    "sunset": "2026-09-28",
+    "replacement": "gpt-5.6-terra",
+    "severity": "critical",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "gpt-3.5-turbo-1106",
+    "sunset": "2026-09-28",
+    "replacement": "gpt-5.6-terra",
+    "severity": "critical",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "gpt-3.5-turbo-instruct",
+    "sunset": "2026-09-28",
+    "replacement": "gpt-5.6-terra",
+    "severity": "critical",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "gpt-5.4-cyber",
+    "sunset": "2026-10-01",
+    "replacement": "gpt-5.6-cyber",
+    "severity": "critical",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "gpt-3.5-turbo-0125",
+    "sunset": "2026-10-23",
+    "replacement": "gpt-5.6-terra",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "gpt-4-0613",
+    "sunset": "2026-10-23",
+    "replacement": "gpt-5.6-sol",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "gpt-4-1106-preview",
+    "sunset": "2026-10-23",
+    "replacement": "gpt-5.6-sol",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "gpt-4-turbo",
+    "sunset": "2026-10-23",
+    "replacement": "gpt-5.6-sol",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "gpt-4.1-nano",
+    "sunset": "2026-10-23",
+    "replacement": "gpt-5.6-luna",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "gpt-4o-2024-05-13",
+    "sunset": "2026-10-23",
+    "replacement": "gpt-5.6-sol",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "gpt-image-1",
+    "sunset": "2026-10-23",
+    "replacement": "gpt-image-2.5-sunburst or gpt-image-2.5-flare",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "o1-2024-12-17",
+    "sunset": "2026-10-23",
+    "replacement": "gpt-5.6-sol",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "o1-pro-2025-03-19",
+    "sunset": "2026-10-23",
+    "replacement": "gpt-5.6-sol (reasoning.mode: pro)",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "o3-mini-2025-01-31",
+    "sunset": "2026-10-23",
+    "replacement": "gpt-5.6-sol",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "o4-mini-2025-04-16",
+    "sunset": "2026-10-23",
+    "replacement": "gpt-5.6-terra",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "api",
+    "id": "/v1/prompts",
+    "sunset": "2026-11-30",
+    "replacement": "Move reusable prompt content into application code",
+    "severity": "critical",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "platform",
+    "id": "Agent Builder",
+    "sunset": "2026-11-30",
+    "replacement": "Agents SDK or ChatGPT Workspace Agents",
+    "severity": "critical",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "platform",
+    "id": "Evals platform",
+    "sunset": "2026-11-30",
+    "replacement": "Promptfoo migration path / code-managed evaluations",
+    "severity": "critical",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "chatgpt-image-latest",
+    "sunset": "2026-12-01",
+    "replacement": "gpt-image-2.5-sunburst or gpt-image-2.5-flare",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "gpt-image-1-mini",
+    "sunset": "2026-12-01",
+    "replacement": "gpt-image-2.5-sunburst or gpt-image-2.5-flare",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "gpt-image-1.5",
+    "sunset": "2026-12-01",
+    "replacement": "gpt-image-2.5-sunburst or gpt-image-2.5-flare",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "gpt-5-2025-08-07",
+    "sunset": "2026-12-11",
+    "replacement": "gpt-5.6-sol",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "gpt-5-mini-2025-08-07",
+    "sunset": "2026-12-11",
+    "replacement": "gpt-5.6-terra",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "gpt-5-nano-2025-08-07",
+    "sunset": "2026-12-11",
+    "replacement": "gpt-5.6-luna",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "gpt-5-pro-2025-10-06",
+    "sunset": "2026-12-11",
+    "replacement": "gpt-5.6-sol (reasoning.mode: pro)",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "o3-2025-04-16",
+    "sunset": "2026-12-11",
+    "replacement": "gpt-5.6-sol",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "o3-pro-2025-06-10",
+    "sunset": "2026-12-11",
+    "replacement": "gpt-5.6-sol (reasoning.mode: pro)",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  }
+]

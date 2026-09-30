@@ -1,0 +1,26 @@
+name: SunsetDoctor
+description: Scan a repository for OpenAI deprecations and shutdown deadlines
+inputs:
+  path:
+    description: Path to scan
+    required: false
+    default: .
+  fail-on:
+    description: Failure threshold (critical, high, any, overdue, never)
+    required: false
+    default: critical
+  report:
+    description: Optional HTML report path
+    required: false
+    default: sunset-doctor-report.html
+outputs:
+  findings:
+    description: Number of deprecation findings
+  report:
+    description: Generated HTML report path
+runs:
+  using: node24
+  main: src/index.js
+branding:
+  icon: alert-triangle
+  color: orange
