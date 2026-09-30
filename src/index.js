@@ -348,7 +348,7 @@ function emitActionAnnotations(findings) {
     const file = path.relative(process.cwd(), f.file) || path.basename(f.file);
     const title = `SunsetDoctor: ${f.id}`;
     const message = `${f.kind} ${f.id} sunsets ${f.sunset}. Migrate to: ${f.replacement}`;
-    console.log(
+    console.error(
       `::${level} file=${actionEscape(file)},line=${f.line},title=${actionEscape(title)}::${actionEscape(message)}`
     );
   }

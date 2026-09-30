@@ -144,6 +144,17 @@ test("GitHub Actions mode emits file annotations", () => {
   });
 
   assert.equal(result.status, 0, result.stderr);
-  assert.match(result.stdout, /::error file=fixtures[\\/]sample\.js,line=5/);
-  assert.match(result.stdout, /::warning file=fixtures[\\/]sample\.js,line=3/);
+  assert.match(result.stderr, /::error file=fixtures[\\/]sample\.js,line=5/);
+  assert.match(result.stderr, /::warning file=fixtures[\\/]sample\.js,line=3/);
+});
+
+test("GitHub annotations do not corrupt JSON stdout", () => {
+  const result = run(["scan", "./fixtures", "--json", "--fail-on", "never"], {
+    GITHUB_ACTIONS: "true"
+  });
+
+  assert.equal(result.status, 0, result.stderr);
+  const report = JSON.parse(result.stdout);
+  assert.equal(report.summary.total, 2);
+  assert.match(result.stderr, /::error file=fixtures[\\/]sample\.js/);
 });
