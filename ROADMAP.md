@@ -17,7 +17,8 @@
 - [x] Registry coverage through February 2027
 - [x] PR/file annotations in GitHub Actions
 - [x] Security regression tests + least-privilege CI
-- [x] Published tagged releases through v0.4.0
+- [x] Published tagged releases through v0.5.1
+- [x] Read-only public GitHub repository audit mode
 - [ ] GitHub Release page
 
 ## Phase 2 — Migration assistant
@@ -36,6 +37,7 @@
 - [ ] Model upgrade cost / latency comparison
 - [ ] Human migration service for Agent Builder, reusable prompts, and Evals
 - [ ] First 5 design-partner scans / migration audits
+- [x] First public prospect evidence pack generated (opencommit)
 
 ## Second product candidate
 Agent Permission Diff: snapshot MCP / agent tools and permissions in CI, then warn when a PR adds a new write-capable tool, broader scope, unsafe URL access, or credential exposure.

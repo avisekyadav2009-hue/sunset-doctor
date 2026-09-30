@@ -26,6 +26,8 @@ SunsetDoctor is designed to answer four questions:
 - Agent Builder hosted workflow IDs such as `wf_...`
 - ChatKit hosted workflow configuration
 - known API/platform shutdown references
+- public GitHub repositories via read-only `audit` mode
+
 ## Quick start
 
 ### Run locally
@@ -56,13 +58,16 @@ node src/index.js scan /path/to/repo --dry-run
 
 # apply only unambiguous model-ID replacements
 node src/index.js scan /path/to/repo --fix
+
+# audit a public GitHub repo without executing its code
+node src/index.js audit https://github.com/owner/repo --plan migration-plan.md --html report.html --fail-on never
 ```
 
 ### GitHub Action
 
 ```yaml
 - name: Scan OpenAI shutdown risks
-  uses: avisekyadav2009-hue/sunset-doctor@v0.5.1
+  uses: avisekyadav2009-hue/sunset-doctor@v0.6.0
   with:
     path: .
     fail-on: critical
@@ -111,6 +116,14 @@ See [docs/demo.md](docs/demo.md) for a walkthrough.
 - `never`
 
 Default: `critical`.
+
+## Public repository audits
+
+`audit` accepts only repository-root URLs in the form `https://github.com/<owner>/<repo>`. SunsetDoctor shallow-clones the repository into a temporary directory, scans text/source/config files, produces the requested output, and deletes the temporary clone afterward.
+
+Audit mode never runs `npm install`, package scripts, tests, hooks, or any code from the target repository. It also refuses `--fix` against third-party repositories; use `--dry-run` or `--diff` for previews.
+
+JSON audit output uses the GitHub URL plus relative file paths rather than exposing local temporary paths.
 
 ## Safety
 

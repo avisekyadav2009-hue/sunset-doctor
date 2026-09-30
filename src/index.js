@@ -7,6 +7,7 @@ import {
   renderMigrationPlanMarkdown,
   scanMigrationSurfaces
 } from "./migration-plan.js";
+import { clonePublicGitHubRepo } from "./public-audit.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const registry = JSON.parse(
@@ -119,14 +120,14 @@ function parseArgs() {
   const args = process.argv.slice(2);
   const hasCommand = args[0] && !args[0].startsWith("--");
   const command = hasCommand ? args[0] : "scan";
-  if (command !== "scan") {
+  if (!["scan", "audit"].includes(command)) {
     console.error(
-      "Usage: sunset-doctor scan [path] [--json] [--html FILE] [--plan FILE] [--fail-on LEVEL] [--fix] [--dry-run] [--diff]"
+      "Usage: sunset-doctor <scan|audit> <path|github-url> [--json] [--html FILE] [--plan FILE] [--fail-on LEVEL] [--fix] [--dry-run] [--diff]"
     );
     process.exit(2);
   }
 
-  let targetArg = ".";
+  let targetArg = command === "audit" ? null : ".";
   let json = false;
   let htmlPath = null;
   let planPath = null;
@@ -145,10 +146,15 @@ function parseArgs() {
     else if (arg === "--fix") fix = true;
     else if (arg === "--dry-run") dryRun = true;
     else if (arg === "--diff") diff = true;
-    else if (!arg.startsWith("--") && targetArg === ".") targetArg = arg;
+    else if (!arg.startsWith("--") && (targetArg === "." || targetArg === null)) targetArg = arg;
   }
   if (dryRun || diff) fix = true;
   if (diff) dryRun = true;
+
+  if (command === "audit" && !targetArg) {
+    console.error("audit requires a public GitHub repository URL.");
+    process.exit(2);
+  }
 
   if (process.env.GITHUB_ACTIONS === "true") {
     targetArg = process.env.INPUT_PATH || targetArg;
@@ -180,7 +186,8 @@ function parseArgs() {
   }
 
   return {
-    target: path.resolve(targetArg),
+    command,
+    target: command === "audit" ? targetArg : path.resolve(targetArg),
     json,
     htmlPath: htmlPath ? path.resolve(htmlPath) : null,
     planPath: planPath ? path.resolve(planPath) : null,
@@ -250,8 +257,10 @@ function summarize(findings) {
 }
 
 function renderHtml(result) {
+  const relativeRoot = result.scan_root || result.target;
+  const displayTarget = result.source_url || result.target;
   const rows = result.findings.map((f) => {
-    const rel = path.relative(result.target, f.file) || path.basename(f.file);
+    const rel = path.relative(relativeRoot, f.file) || path.basename(f.file);
     const countdown = f.days_remaining >= 0
       ? f.days_remaining + " days left"
       : Math.abs(f.days_remaining) + " days overdue";
@@ -265,7 +274,7 @@ function renderHtml(result) {
   }).join("\n");
 
   const fixRows = result.fixes.map((f) => {
-    const rel = path.relative(result.target, f.file) || path.basename(f.file);
+    const rel = path.relative(relativeRoot, f.file) || path.basename(f.file);
     const mode = f.applied ? "applied" : "preview";
     return `<tr>
 <td><code>${escapeHtml(rel)}</code></td>
@@ -286,7 +295,7 @@ h1{margin-bottom:4px}.muted{color:#666}.cards{display:flex;gap:12px;flex-wrap:wr
 table{width:100%;border-collapse:collapse;margin-top:20px}th,td{text-align:left;vertical-align:top;padding:10px;border-bottom:1px solid #e5e5e5}
 th{background:#f7f7f7}code{font-size:12px}small{color:#666}</style></head>
 <body><h1>SunsetDoctor</h1>
-<p class="muted">OpenAI deprecation scan for <code>${escapeHtml(result.target)}</code></p>
+<p class="muted">OpenAI deprecation scan for <code>${escapeHtml(displayTarget)}</code></p>
 <div class="cards">
 <div class="card"><div class="n">${s.total}</div><div>Remaining findings</div></div>
 <div class="card"><div class="n">${s.critical}</div><div>Critical</div></div>
@@ -299,7 +308,7 @@ th{background:#f7f7f7}code{font-size:12px}small{color:#666}</style></head>
 <h2>Safe model-ID fixes</h2>
 <table><thead><tr><th>File</th><th>From</th><th>To</th><th>Count</th><th>Status</th></tr></thead>
 <tbody>${fixRows || '<tr><td colspan="5">No safe automatic fixes identified.</td></tr>'}</tbody></table>
-<p class="muted">Generated ${escapeHtml(result.generated_at)} · Registry entries: ${registry.length}</p>
+<p class="muted">Generated ${escapeHtml(result.generated_at)} Â· Registry entries: ${registry.length}</p>
 </body></html>`;
 }
 
@@ -389,83 +398,126 @@ function printFindings(findings, target) {
 }
 
 function main() {
-  const options = parseArgs();
-  const files = walk(options.target);
-  const before = scanFiles(files);
-  const surfaceBefore = scanMigrationSurfaces(files)
-    .map((f) => ({ ...f, days_remaining: daysUntil(f.sunset) }));
-  const preFixSummary = summarize([...before, ...surfaceBefore]);
-  const fixes = options.fix ? applySafeFixes(before, options.dryRun) : [];
-  const registryFindings = options.fix && !options.dryRun ? scanFiles(files) : before;
-  const surfaceFindings = options.fix && !options.dryRun
-    ? scanMigrationSurfaces(files).map((f) => ({ ...f, days_remaining: daysUntil(f.sunset) }))
-    : surfaceBefore;
-  const findings = [...registryFindings, ...surfaceFindings].sort((a, b) =>
-    a.sunset.localeCompare(b.sunset) ||
-    a.file.localeCompare(b.file) ||
-    a.line - b.line
-  );
-  const migrationPlan = buildMigrationPlan(
-    registryFindings,
-    surfaceFindings,
-    options.target
-  );
+  let audit = null;
+  let exitCode = 0;
 
-  const result = {
-    target: options.target,
-    generated_at: new Date().toISOString(),
-    files_scanned: files.length,
-    registry_entries: registry.length,
-    mode: options.diff ? "diff" : options.dryRun ? "dry-run" : options.fix ? "fix" : "scan",
-    pre_fix_summary: preFixSummary,
-    summary: summarize(findings),
-    fixes,
-    registry_findings: registryFindings,
-    surface_findings: surfaceFindings,
-    migration_plan: migrationPlan,
-    findings
-  };
+  try {
+    const options = parseArgs();
 
-  if (options.htmlPath) {
-    fs.mkdirSync(path.dirname(options.htmlPath), { recursive: true });
-    fs.writeFileSync(options.htmlPath, renderHtml(result), "utf8");
-  }
+    if (options.command === "audit" && options.fix && !options.dryRun) {
+      throw new Error("audit does not modify third-party repositories; use --dry-run or --diff instead of --fix");
+    }
 
-  if (options.planPath) {
-    fs.mkdirSync(path.dirname(options.planPath), { recursive: true });
-    fs.writeFileSync(
-      options.planPath,
-      renderMigrationPlanMarkdown(migrationPlan),
-      "utf8"
+    let scanTarget = options.target;
+    let displayTarget = options.target;
+
+    if (options.command === "audit") {
+      audit = clonePublicGitHubRepo(options.target);
+      scanTarget = audit.repoPath;
+      displayTarget = audit.url;
+    }
+
+    const files = walk(scanTarget);
+    const before = scanFiles(files);
+    const surfaceBefore = scanMigrationSurfaces(files)
+      .map((f) => ({ ...f, days_remaining: daysUntil(f.sunset) }));
+    const preFixSummary = summarize([...before, ...surfaceBefore]);
+    const fixes = options.fix ? applySafeFixes(before, options.dryRun) : [];
+    const registryFindings = options.fix && !options.dryRun ? scanFiles(files) : before;
+    const surfaceFindings = options.fix && !options.dryRun
+      ? scanMigrationSurfaces(files).map((f) => ({ ...f, days_remaining: daysUntil(f.sunset) }))
+      : surfaceBefore;
+    const findings = [...registryFindings, ...surfaceFindings].sort((a, b) =>
+      a.sunset.localeCompare(b.sunset) ||
+      a.file.localeCompare(b.file) ||
+      a.line - b.line
     );
-  }
 
-  if (options.json) {
-    console.log(JSON.stringify(result, null, 2));
-  } else {
-    console.log(`SunsetDoctor scanned ${files.length} files in ${options.target}`);
-    if (options.diff) printMigrationDiff(fixes, options.target);
-    else if (options.fix) printFixes(fixes, options.target, options.dryRun);
-    console.log(
-      `Findings: ${result.summary.total} | critical: ${result.summary.critical} | high: ${result.summary.high} | overdue: ${result.summary.overdue}`
+    const migrationPlan = buildMigrationPlan(
+      registryFindings,
+      surfaceFindings,
+      scanTarget
     );
-    printFindings(findings, options.target);
+    if (audit) migrationPlan.target = displayTarget;
+
+    const result = {
+      target: displayTarget,
+      scan_root: scanTarget,
+      source_url: audit ? displayTarget : null,
+      generated_at: new Date().toISOString(),
+      files_scanned: files.length,
+      registry_entries: registry.length,
+      mode: options.command === "audit"
+        ? (options.diff ? "audit-diff" : options.dryRun ? "audit-dry-run" : "audit")
+        : (options.diff ? "diff" : options.dryRun ? "dry-run" : options.fix ? "fix" : "scan"),
+      pre_fix_summary: preFixSummary,
+      summary: summarize(findings),
+      fixes,
+      registry_findings: registryFindings,
+      surface_findings: surfaceFindings,
+      migration_plan: migrationPlan,
+      findings
+    };
+
+    if (options.htmlPath) {
+      fs.mkdirSync(path.dirname(options.htmlPath), { recursive: true });
+      fs.writeFileSync(options.htmlPath, renderHtml(result), "utf8");
+    }
+
+    if (options.planPath) {
+      fs.mkdirSync(path.dirname(options.planPath), { recursive: true });
+      fs.writeFileSync(
+        options.planPath,
+        renderMigrationPlanMarkdown(migrationPlan),
+        "utf8"
+      );
+    }
+
+    if (options.json) {
+      const relativeFile = (file) => audit
+        ? (path.relative(scanTarget, file) || path.basename(file))
+        : file;
+      const jsonResult = {
+        ...result,
+        fixes: fixes.map((f) => ({ ...f, file: relativeFile(f.file) })),
+        registry_findings: registryFindings.map((f) => ({ ...f, file: relativeFile(f.file) })),
+        surface_findings: surfaceFindings.map((f) => ({ ...f, file: relativeFile(f.file) })),
+        findings: findings.map((f) => ({ ...f, file: relativeFile(f.file) }))
+      };
+      delete jsonResult.scan_root;
+      console.log(JSON.stringify(jsonResult, null, 2));
+    } else {
+      const verb = options.command === "audit" ? "audited" : "scanned";
+      console.log(`SunsetDoctor ${verb} ${files.length} files in ${displayTarget}`);
+      if (options.diff) printMigrationDiff(fixes, scanTarget);
+      else if (options.fix) printFixes(fixes, scanTarget, options.dryRun);
+      console.log(
+        `Findings: ${result.summary.total} | critical: ${result.summary.critical} | high: ${result.summary.high} | overdue: ${result.summary.overdue}`
+      );
+      printFindings(findings, scanTarget);
+    }
+
+    if (options.command !== "audit") emitActionAnnotations(findings);
+
+    if (options.htmlPath && !options.json) {
+      console.log(`HTML report: ${options.htmlPath}`);
+    }
+    if (options.planPath && !options.json) {
+      console.log(`Migration plan: ${options.planPath}`);
+    }
+
+    setActionOutput("findings", result.summary.total);
+    setActionOutput("fixes", fixes.length);
+    setActionOutput("report", options.htmlPath || "");
+    setActionOutput("plan", options.planPath || "");
+    exitCode = shouldFail(findings, options.failOn) ? 1 : 0;
+  } catch (error) {
+    console.error(`SunsetDoctor failed: ${error.message}`);
+    exitCode = 2;
   }
 
-  emitActionAnnotations(findings);
-
-  if (options.htmlPath && !options.json) {
-    console.log(`HTML report: ${options.htmlPath}`);
-  }
-  if (options.planPath && !options.json) {
-    console.log(`Migration plan: ${options.planPath}`);
-  }
-
-  setActionOutput("findings", result.summary.total);
-  setActionOutput("fixes", fixes.length);
-  setActionOutput("report", options.htmlPath || "");
-  setActionOutput("plan", options.planPath || "");
-  process.exit(shouldFail(findings, options.failOn) ? 1 : 0);
+  if (audit) audit.cleanup();
+  process.exit(exitCode);
 }
 
 main();

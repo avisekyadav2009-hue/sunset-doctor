@@ -1,6 +1,6 @@
 {
   "name": "sunset-doctor",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "Detect OpenAI shutdown risks, generate migration plans, and safely fix unambiguous model-ID deprecations.",
   "type": "module",
   "bin": {
