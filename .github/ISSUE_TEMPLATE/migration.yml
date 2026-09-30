@@ -1,0 +1,35 @@
+name: Migration help
+description: Ask for help with an OpenAI deprecation or migration found by SunsetDoctor
+title: "[Migration] "
+labels: ["migration"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not paste API keys, credentials, private source code, customer data, or other secrets.
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Migration type
+      options:
+        - Model/API
+        - Reusable prompt
+        - Agent Builder / Agents SDK
+        - Evals
+        - ChatKit workflow
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: findings
+    attributes:
+      label: Sanitized SunsetDoctor findings
+      description: Paste only non-sensitive finding text, file names may be anonymized.
+    validations:
+      required: true
+  - type: textarea
+    id: goal
+    attributes:
+      label: What do you want to achieve?
+    validations:
+      required: true
