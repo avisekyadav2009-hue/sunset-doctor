@@ -2,6 +2,7 @@
 sunset-doctor-report.html
 gha-report.html
 gha-output.txt
+sunset-doctor-migration-plan.md
 
 # Local environment / credentials
 .env

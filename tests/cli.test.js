@@ -158,3 +158,17 @@ test("GitHub annotations do not corrupt JSON stdout", () => {
   assert.equal(report.summary.total, 2);
   assert.match(result.stderr, /::error file=fixtures[\\/]sample\.js/);
 });
+
+
+test("overdue Sora 2 references are flagged as critical manual migrations", () => {
+  const dir = tempProject('const model = "sora-2-pro";\n');
+  const result = run(["scan", dir, "--json", "--fail-on", "never"]);
+
+  assert.equal(result.status, 0, result.stderr);
+  const report = JSON.parse(result.stdout);
+  const finding = report.findings.find((f) => f.id === "sora-2-pro");
+  assert.ok(finding);
+  assert.equal(finding.severity, "critical");
+  assert.ok(finding.days_remaining < 0);
+  assert.equal(report.migration_plan.safe_autofix_items, 0);
+});

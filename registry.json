@@ -2,6 +2,60 @@
   {
     "vendor": "OpenAI",
     "kind": "model",
+    "id": "sora-2",
+    "sunset": "2026-09-24",
+    "replacement": "No direct replacement listed; manual migration required",
+    "severity": "critical",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "sora-2-2025-10-06",
+    "sunset": "2026-09-24",
+    "replacement": "No direct replacement listed; manual migration required",
+    "severity": "critical",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "sora-2-2025-12-08",
+    "sunset": "2026-09-24",
+    "replacement": "No direct replacement listed; manual migration required",
+    "severity": "critical",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "sora-2-pro",
+    "sunset": "2026-09-24",
+    "replacement": "No direct replacement listed; manual migration required",
+    "severity": "critical",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "sora-2-pro-2025-10-06",
+    "sunset": "2026-09-24",
+    "replacement": "No direct replacement listed; manual migration required",
+    "severity": "critical",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "api",
+    "id": "Videos API",
+    "sunset": "2026-09-24",
+    "replacement": "No direct replacement listed; manual migration required",
+    "severity": "critical",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
     "id": "babbage-002",
     "sunset": "2026-09-28",
     "replacement": "gpt-5.6-terra",
