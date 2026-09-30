@@ -67,7 +67,7 @@ node src/index.js audit https://github.com/owner/repo --plan migration-plan.md -
 
 ```yaml
 - name: Scan OpenAI shutdown risks
-  uses: avisekyadav2009-hue/sunset-doctor@v0.6.0
+  uses: avisekyadav2009-hue/sunset-doctor@v0.6.1
   with:
     path: .
     fail-on: critical
