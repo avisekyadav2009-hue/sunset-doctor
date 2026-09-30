@@ -10,14 +10,18 @@
 - [x] Replacement suggestions
 - [x] Configurable CI failure threshold
 - [x] GitHub Action outputs
-- [ ] Automated tests
+- [x] Automated tests
+- [x] GitHub CI workflow
+- [x] Safe model-ID auto-fix + dry-run
+- [x] Overlap-safe alias matching
+- [x] Registry coverage through February 2027
 - [ ] PR annotations/comments
-- [ ] Published GitHub repository + tagged release
+- [ ] Published tagged release
 
 ## Phase 2 — Migration assistant
 - [ ] Detect SDK version and API surface
 - [ ] Generate migration checklist
-- [ ] Safe codemods for simple model identifier replacements
+- [x] Safe codemods for simple model identifier replacements
 - [ ] Diff mode: before/after findings
 - [ ] Validate changed code with tests where available
 

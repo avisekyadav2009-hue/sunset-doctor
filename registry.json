@@ -47,6 +47,69 @@
   {
     "vendor": "OpenAI",
     "kind": "model",
+    "id": "ft-babbage-002",
+    "sunset": "2026-10-23",
+    "replacement": "gpt-5.6-terra",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "ft-davinci-002",
+    "sunset": "2026-10-23",
+    "replacement": "gpt-5.6-terra",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "ft-gpt-3.5-turbo",
+    "sunset": "2026-10-23",
+    "replacement": "gpt-5.6-terra",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "ft-gpt-4",
+    "sunset": "2026-10-23",
+    "replacement": "gpt-5.6-sol",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "ft-gpt-4.1-nano-2025-04-14",
+    "sunset": "2026-10-23",
+    "replacement": "gpt-5.6-luna",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "ft-o4-mini-2025-04-16",
+    "sunset": "2026-10-23",
+    "replacement": "gpt-5.6-terra",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "gpt-3.5-turbo",
+    "sunset": "2026-10-23",
+    "replacement": "gpt-5.6-terra",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
     "id": "gpt-3.5-turbo-0125",
     "sunset": "2026-10-23",
     "replacement": "gpt-5.6-terra",
@@ -56,7 +119,34 @@
   {
     "vendor": "OpenAI",
     "kind": "model",
+    "id": "gpt-3.5-turbo-completions",
+    "sunset": "2026-10-23",
+    "replacement": "gpt-5.6-terra",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "gpt-4",
+    "sunset": "2026-10-23",
+    "replacement": "gpt-5.6-sol",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
     "id": "gpt-4-0613",
+    "sunset": "2026-10-23",
+    "replacement": "gpt-5.6-sol",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "gpt-4-0613-completions",
     "sunset": "2026-10-23",
     "replacement": "gpt-5.6-sol",
     "severity": "high",
@@ -74,6 +164,15 @@
   {
     "vendor": "OpenAI",
     "kind": "model",
+    "id": "gpt-4-completions",
+    "sunset": "2026-10-23",
+    "replacement": "gpt-5.6-sol",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
     "id": "gpt-4-turbo",
     "sunset": "2026-10-23",
     "replacement": "gpt-5.6-sol",
@@ -83,7 +182,34 @@
   {
     "vendor": "OpenAI",
     "kind": "model",
+    "id": "gpt-4-turbo-2024-04-09",
+    "sunset": "2026-10-23",
+    "replacement": "gpt-5.6-sol",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "gpt-4-turbo-completions",
+    "sunset": "2026-10-23",
+    "replacement": "gpt-5.6-sol",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
     "id": "gpt-4.1-nano",
+    "sunset": "2026-10-23",
+    "replacement": "gpt-5.6-luna",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "gpt-4.1-nano-2025-04-14",
     "sunset": "2026-10-23",
     "replacement": "gpt-5.6-luna",
     "severity": "high",
@@ -110,7 +236,25 @@
   {
     "vendor": "OpenAI",
     "kind": "model",
+    "id": "o1",
+    "sunset": "2026-10-23",
+    "replacement": "gpt-5.6-sol",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
     "id": "o1-2024-12-17",
+    "sunset": "2026-10-23",
+    "replacement": "gpt-5.6-sol",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "o1-pro",
     "sunset": "2026-10-23",
     "replacement": "gpt-5.6-sol",
     "severity": "high",
@@ -128,9 +272,27 @@
   {
     "vendor": "OpenAI",
     "kind": "model",
+    "id": "o3-mini",
+    "sunset": "2026-10-23",
+    "replacement": "gpt-5.6-sol",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
     "id": "o3-mini-2025-01-31",
     "sunset": "2026-10-23",
     "replacement": "gpt-5.6-sol",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "o4-mini",
+    "sunset": "2026-10-23",
+    "replacement": "gpt-5.6-terra",
     "severity": "high",
     "source": "https://developers.openai.com/api/docs/deprecations"
   },
@@ -248,6 +410,123 @@
     "id": "o3-pro-2025-06-10",
     "sunset": "2026-12-11",
     "replacement": "gpt-5.6-sol (reasoning.mode: pro)",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "gpt-4o-audio",
+    "sunset": "2027-01-20",
+    "replacement": "gpt-audio-1.5",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "gpt-4o-mini-audio",
+    "sunset": "2027-01-20",
+    "replacement": "gpt-audio-1.5",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "gpt-4o-mini-realtime",
+    "sunset": "2027-01-20",
+    "replacement": "gpt-realtime-2.1-mini",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "gpt-4o-mini-transcribe-2025-03-20",
+    "sunset": "2027-01-20",
+    "replacement": "gpt-4o-mini-transcribe-2025-12-15",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "gpt-4o-realtime",
+    "sunset": "2027-01-20",
+    "replacement": "gpt-realtime-2.1",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "gpt-audio",
+    "sunset": "2027-01-20",
+    "replacement": "gpt-audio-1.5",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "gpt-audio-mini",
+    "sunset": "2027-01-20",
+    "replacement": "gpt-audio-1.5",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "gpt-realtime",
+    "sunset": "2027-01-20",
+    "replacement": "gpt-realtime-2.1",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "gpt-realtime-mini",
+    "sunset": "2027-01-20",
+    "replacement": "gpt-realtime-2.1-mini",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "gpt-4o-mini-transcribe",
+    "sunset": "2027-02-26",
+    "replacement": "gpt-live-transcribe or gpt-transcribe",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "gpt-4o-transcribe",
+    "sunset": "2027-02-26",
+    "replacement": "gpt-live-transcribe or gpt-transcribe",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "gpt-4o-transcribe-diarize",
+    "sunset": "2027-02-26",
+    "replacement": "gpt-live-transcribe or gpt-transcribe",
+    "severity": "high",
+    "source": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "vendor": "OpenAI",
+    "kind": "model",
+    "id": "whisper-1",
+    "sunset": "2027-02-26",
+    "replacement": "gpt-live-transcribe or gpt-transcribe",
     "severity": "high",
     "source": "https://developers.openai.com/api/docs/deprecations"
   }

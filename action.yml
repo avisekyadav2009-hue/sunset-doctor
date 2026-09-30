@@ -6,7 +6,7 @@ inputs:
     required: false
     default: .
   fail-on:
-    description: Failure threshold (critical, high, any, overdue, never)
+    description: Failure threshold (critical, high, medium, low, any, overdue, never)
     required: false
     default: critical
   report:
@@ -15,7 +15,9 @@ inputs:
     default: sunset-doctor-report.html
 outputs:
   findings:
-    description: Number of deprecation findings
+    description: Number of remaining deprecation findings
+  fixes:
+    description: Number of safe automatic fixes identified/applied by the CLI
   report:
     description: Generated HTML report path
 runs:

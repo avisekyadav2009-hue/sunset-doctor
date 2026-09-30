@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Run automated tests
+        run: node --test ./tests/*.test.js
+
+      - name: Self-test SunsetDoctor Action
+        id: doctor
+        uses: ./
+        with:
+          path: ./fixtures
+          fail-on: never
+          report: ./sunset-doctor-report.html
+
+      - name: Verify Action outputs
+        run: |
+          test "${{ steps.doctor.outputs.findings }}" = "2"
+          test -f ./sunset-doctor-report.html

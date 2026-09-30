@@ -6,7 +6,7 @@ SunsetDoctor scans a codebase for OpenAI models, APIs, and workflow features tha
 
 Deprecation deadlines can silently become production outages. SunsetDoctor turns official shutdown notices into repo-level findings with file/line locations, countdowns, migration guidance, CI failure thresholds, JSON, and HTML reports.
 
-## Current MVP (v0.2.0)
+## Current MVP (v0.3.0)
 
 - scans source and config files for known deprecated OpenAI references
 - reports file + line + excerpt
@@ -17,6 +17,11 @@ Deprecation deadlines can silently become production outages. SunsetDoctor turns
 - configurable CI failure threshold
 - GitHub Action support on Node 24
 - GitHub Action outputs for finding count and report path
+- safe automatic model-ID migrations with `--fix`
+- preview migrations without changing files with `--dry-run`
+- automated Node test suite and GitHub CI
+- overlap-safe matching for model aliases and snapshots
+- registry coverage through February 2027
 
 ## CLI
 
@@ -25,7 +30,13 @@ node src/index.js scan /path/to/repo
 node src/index.js scan /path/to/repo --json
 node src/index.js scan /path/to/repo --html sunset-doctor-report.html
 node src/index.js scan /path/to/repo --fail-on high
+node src/index.js scan /path/to/repo --dry-run
+node src/index.js scan /path/to/repo --fix
 ```
+
+### Safe fixes
+
+`--dry-run` previews automatic migrations without changing files. `--fix` only rewrites unambiguous deprecated model IDs with a single documented replacement. API migrations, platform migrations, and choices with multiple possible replacements remain findings for human review.
 ### Failure thresholds
 
 `--fail-on` accepts:
@@ -44,7 +55,7 @@ The default is `critical`.
 
 ```yaml
 - name: Scan OpenAI deprecations
-  uses: YOUR_GITHUB_USERNAME/sunset-doctor@v0.2.0
+  uses: avisekyadav2009-hue/sunset-doctor@v0.3.0
   with:
     path: .
     fail-on: critical
@@ -58,10 +69,8 @@ The Action exposes `findings` and `report` outputs so a workflow can upload the 
 The registry is sourced from OpenAI's official deprecation documentation. Before releases, entries should be rechecked against the official source because shutdown dates and recommended replacements can change.
 ## Near-term roadmap
 
-1. Add more official OpenAI deprecations and aliases.
-2. Add tests for CLI parsing, thresholds, HTML, and GitHub Action environment inputs.
-3. Add safe codemods for simple model-ID replacements.
-4. Add diff mode: before/after migration findings.
-5. Add PR annotations/comments.
-6. Publish the free scanner and GitHub Action.
-7. Offer paid migration help for Agent Builder, reusable prompts, and Evals.
+1. Add diff mode: before/after migration findings.
+2. Add PR annotations/comments.
+3. Add migration checks for SDK/API surface changes.
+4. Publish the free scanner and GitHub Action.
+5. Offer paid migration help for Agent Builder, reusable prompts, and Evals.
