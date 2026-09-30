@@ -121,3 +121,40 @@ test("GitHub Action reads hyphenated fail-on input", () => {
   assert.equal(result.status, 0, result.stderr);
   assert.match(result.stdout, /Findings: 2/);
 });
+
+test("--diff shows before and after without editing files", () => {
+  const dir = tempProject('const model = "gpt-5-2025-08-07";\n');
+  const file = path.join(dir, "app.js");
+  const before = fs.readFileSync(file, "utf8");
+  const result = run(["scan", dir, "--diff", "--fail-on", "never"]);
+
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /Migration diff:/);
+  assert.match(result.stdout, /BEFORE: gpt-5-2025-08-07/);
+  assert.match(result.stdout, /AFTER:\s+gpt-5\.6-sol/);
+  assert.equal(fs.readFileSync(file, "utf8"), before);
+});
+
+test("GitHub Actions mode emits file annotations", () => {
+  const result = run([], {
+    GITHUB_ACTIONS: "true",
+    INPUT_PATH: "./fixtures",
+    "INPUT_FAIL-ON": "never",
+    INPUT_REPORT: ""
+  });
+
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stderr, /::error file=fixtures[\\/]sample\.js,line=5/);
+  assert.match(result.stderr, /::warning file=fixtures[\\/]sample\.js,line=3/);
+});
+
+test("GitHub annotations do not corrupt JSON stdout", () => {
+  const result = run(["scan", "./fixtures", "--json", "--fail-on", "never"], {
+    GITHUB_ACTIONS: "true"
+  });
+
+  assert.equal(result.status, 0, result.stderr);
+  const report = JSON.parse(result.stdout);
+  assert.equal(report.summary.total, 2);
+  assert.match(result.stderr, /::error file=fixtures[\\/]sample\.js/);
+});

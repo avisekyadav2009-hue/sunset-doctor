@@ -1,3 +1,26 @@
+# Generated reports
 sunset-doctor-report.html
 gha-report.html
 gha-output.txt
+
+# Local environment / credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+id_rsa
+id_rsa.*
+id_ed25519
+id_ed25519.*
+credentials.json
+secrets.json
+
+# Local tooling
+node_modules/
+.DS_Store
+Thumbs.db

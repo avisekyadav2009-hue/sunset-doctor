@@ -6,7 +6,7 @@ SunsetDoctor scans a codebase for OpenAI models, APIs, and workflow features tha
 
 Deprecation deadlines can silently become production outages. SunsetDoctor turns official shutdown notices into repo-level findings with file/line locations, countdowns, migration guidance, CI failure thresholds, JSON, and HTML reports.
 
-## Current MVP (v0.3.0)
+## Current MVP (v0.4.0)
 
 - scans source and config files for known deprecated OpenAI references
 - reports file + line + excerpt
@@ -22,6 +22,10 @@ Deprecation deadlines can silently become production outages. SunsetDoctor turns
 - automated Node test suite and GitHub CI
 - overlap-safe matching for model aliases and snapshots
 - registry coverage through February 2027
+- migration diff preview with `--diff`
+- GitHub Actions file/line annotations for deprecations
+- CI security regression tests for common credential/token leaks
+- explicit least-privilege GitHub Actions permissions
 
 ## CLI
 
@@ -32,11 +36,12 @@ node src/index.js scan /path/to/repo --html sunset-doctor-report.html
 node src/index.js scan /path/to/repo --fail-on high
 node src/index.js scan /path/to/repo --dry-run
 node src/index.js scan /path/to/repo --fix
+node src/index.js scan /path/to/repo --diff
 ```
 
 ### Safe fixes
 
-`--dry-run` previews automatic migrations without changing files. `--fix` only rewrites unambiguous deprecated model IDs with a single documented replacement. API migrations, platform migrations, and choices with multiple possible replacements remain findings for human review.
+`--dry-run` previews automatic migrations without changing files. `--diff` presents safe replacements as BEFORE → AFTER changes without editing the project. `--fix` only rewrites unambiguous deprecated model IDs with a single documented replacement. API migrations, platform migrations, and choices with multiple possible replacements remain findings for human review.
 ### Failure thresholds
 
 `--fail-on` accepts:
@@ -55,7 +60,7 @@ The default is `critical`.
 
 ```yaml
 - name: Scan OpenAI deprecations
-  uses: avisekyadav2009-hue/sunset-doctor@v0.3.0
+  uses: avisekyadav2009-hue/sunset-doctor@v0.4.0
   with:
     path: .
     fail-on: critical

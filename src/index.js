@@ -116,7 +116,7 @@ function parseArgs() {
   const command = hasCommand ? args[0] : "scan";
   if (command !== "scan") {
     console.error(
-      "Usage: sunset-doctor scan [path] [--json] [--html FILE] [--fail-on LEVEL] [--fix] [--dry-run]"
+      "Usage: sunset-doctor scan [path] [--json] [--html FILE] [--fail-on LEVEL] [--fix] [--dry-run] [--diff]"
     );
     process.exit(2);
   }
@@ -127,6 +127,7 @@ function parseArgs() {
   let failOn = "critical";
   let fix = false;
   let dryRun = false;
+  let diff = false;
   const start = hasCommand ? 1 : 0;
 
   for (let i = start; i < args.length; i++) {
@@ -136,9 +137,11 @@ function parseArgs() {
     else if (arg === "--fail-on") failOn = (args[++i] || "").toLowerCase();
     else if (arg === "--fix") fix = true;
     else if (arg === "--dry-run") dryRun = true;
+    else if (arg === "--diff") diff = true;
     else if (!arg.startsWith("--") && targetArg === ".") targetArg = arg;
   }
-  if (dryRun) fix = true;
+  if (dryRun || diff) fix = true;
+  if (diff) dryRun = true;
 
   if (process.env.GITHUB_ACTIONS === "true") {
     targetArg = process.env.INPUT_PATH || targetArg;
@@ -170,7 +173,8 @@ function parseArgs() {
     htmlPath: htmlPath ? path.resolve(htmlPath) : null,
     failOn,
     fix,
-    dryRun
+    dryRun,
+    diff
   };
 }
 function isSafeModelReplacement(finding) {
@@ -309,6 +313,47 @@ function printFixes(fixes, target, dryRun) {
   console.log("");
 }
 
+function printMigrationDiff(fixes, target) {
+  if (!fixes.length) {
+    console.log("Migration diff: no safe automatic replacements available.\n");
+    return;
+  }
+
+  console.log("Migration diff:");
+  for (const f of fixes) {
+    const rel = path.relative(target, f.file) || path.basename(f.file);
+    console.log(`  ${rel}`);
+    console.log(`    BEFORE: ${f.from}`);
+    console.log(`    AFTER:  ${f.to}`);
+    console.log(`    CHANGES: ${f.count}`);
+  }
+  console.log("");
+}
+
+function actionEscape(value) {
+  return String(value)
+    .replaceAll("%", "%25")
+    .replaceAll("\r", "%0D")
+    .replaceAll("\n", "%0A")
+    .replaceAll(":", "%3A")
+    .replaceAll(",", "%2C");
+}
+
+function emitActionAnnotations(findings) {
+  if (process.env.GITHUB_ACTIONS !== "true") return;
+
+  for (const f of findings) {
+    const level = f.severity === "critical" ? "error" :
+      f.severity === "high" ? "warning" : "notice";
+    const file = path.relative(process.cwd(), f.file) || path.basename(f.file);
+    const title = `SunsetDoctor: ${f.id}`;
+    const message = `${f.kind} ${f.id} sunsets ${f.sunset}. Migrate to: ${f.replacement}`;
+    console.error(
+      `::${level} file=${actionEscape(file)},line=${f.line},title=${actionEscape(title)}::${actionEscape(message)}`
+    );
+  }
+}
+
 function printFindings(findings, target) {
   if (!findings.length) {
     console.log("No known deprecation references found.");
@@ -343,7 +388,7 @@ function main() {
     generated_at: new Date().toISOString(),
     files_scanned: files.length,
     registry_entries: registry.length,
-    mode: options.dryRun ? "dry-run" : options.fix ? "fix" : "scan",
+    mode: options.diff ? "diff" : options.dryRun ? "dry-run" : options.fix ? "fix" : "scan",
     pre_fix_summary: preFixSummary,
     summary: summarize(findings),
     fixes,
@@ -359,12 +404,15 @@ function main() {
     console.log(JSON.stringify(result, null, 2));
   } else {
     console.log(`SunsetDoctor scanned ${files.length} files in ${options.target}`);
-    if (options.fix) printFixes(fixes, options.target, options.dryRun);
+    if (options.diff) printMigrationDiff(fixes, options.target);
+    else if (options.fix) printFixes(fixes, options.target, options.dryRun);
     console.log(
       `Findings: ${result.summary.total} | critical: ${result.summary.critical} | high: ${result.summary.high} | overdue: ${result.summary.overdue}`
     );
     printFindings(findings, options.target);
   }
+
+  emitActionAnnotations(findings);
 
   if (options.htmlPath && !options.json) {
     console.log(`HTML report: ${options.htmlPath}`);
