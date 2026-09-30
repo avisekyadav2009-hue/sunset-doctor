@@ -30,37 +30,47 @@ SunsetDoctor is designed to answer four questions:
 
 ## Quick start
 
-### Run locally
+### No install required
+
+Run SunsetDoctor directly with npm:
 
 ```bash
-git clone https://github.com/avisekyadav2009-hue/sunset-doctor.git
-cd sunset-doctor
-node src/index.js scan /path/to/your/repo
+npx sunset-doctor scan /path/to/your/repo
+```
+
+Audit a public GitHub repository without executing its code:
+
+```bash
+npx sunset-doctor audit https://github.com/owner/repo --plan migration-plan.md --html report.html --fail-on never
+```
+
+Or install it globally:
+
+```bash
+npm install -g sunset-doctor
+sunset-doctor scan /path/to/your/repo
 ```
 
 Useful modes:
 
 ```bash
 # machine-readable output
-node src/index.js scan /path/to/repo --json
+npx sunset-doctor scan /path/to/repo --json
 
 # HTML report
-node src/index.js scan /path/to/repo --html sunset-doctor-report.html
+npx sunset-doctor scan /path/to/repo --html sunset-doctor-report.html
 
 # Markdown migration checklist
-node src/index.js scan /path/to/repo --plan sunset-doctor-migration-plan.md
+npx sunset-doctor scan /path/to/repo --plan sunset-doctor-migration-plan.md
 
 # show safe BEFORE → AFTER migrations without editing
-node src/index.js scan /path/to/repo --diff
+npx sunset-doctor scan /path/to/repo --diff
 
 # preview safe automatic replacements
-node src/index.js scan /path/to/repo --dry-run
+npx sunset-doctor scan /path/to/repo --dry-run
 
 # apply only unambiguous model-ID replacements
-node src/index.js scan /path/to/repo --fix
-
-# audit a public GitHub repo without executing its code
-node src/index.js audit https://github.com/owner/repo --plan migration-plan.md --html report.html --fail-on never
+npx sunset-doctor scan /path/to/repo --fix
 ```
 
 ### GitHub Action
