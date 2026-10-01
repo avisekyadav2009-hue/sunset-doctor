@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Little Idly - Unofficial Concept Demo</title>
+<style>
+:root{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#211a17;background:#fbf8f4}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#fbf8f4;color:#211a17}
+button,input,select{font:inherit}a{text-decoration:none;color:inherit}
+.hero{min-height:72vh;padding:24px clamp(20px,5vw,72px) 56px;background:linear-gradient(120deg,#211a17 0%,#433126 58%,#7c4b2c 100%);color:#fff;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;width:460px;height:460px;border-radius:50%;background:#ffffff12;right:-100px;top:100px}
+nav{display:flex;justify-content:space-between;align-items:center;position:relative;z-index:2}.brand{font-weight:900;letter-spacing:.16em}
+.navlinks{display:flex;gap:18px;align-items:center}.navlinks button{border:1px solid #ffffff40;background:#ffffff12;color:#fff;border-radius:999px;padding:9px 13px;cursor:pointer}
+.hero-copy{max-width:830px;padding-top:100px;position:relative;z-index:2}.eyebrow{font-size:12px;letter-spacing:.13em;font-weight:900;color:#d69564}.hero .eyebrow{color:#f3c296}
+h1{font-size:clamp(44px,7vw,80px);line-height:.96;letter-spacing:-.05em;margin:10px 0 22px}.hero p{max-width:720px;color:#eadfd7;font-size:19px;line-height:1.6}
+.actions{display:flex;gap:12px;margin-top:28px}.primary,.secondary{display:inline-flex;align-items:center;justify-content:center;border-radius:14px;padding:13px 18px;font-weight:850;border:0;cursor:pointer}
+.primary{background:#d66d2e;color:white}.secondary{border:1px solid #ffffff55;color:#fff;background:#ffffff0d}
+.hero-card{position:absolute;right:6vw;bottom:42px;z-index:2;background:#ffffff12;border:1px solid #ffffff20;padding:18px 20px;border-radius:18px;display:grid;gap:4px}
+.hero-card span{color:#e9d9cf;font-size:13px}.badge{font-size:11px;font-weight:800;color:#ffc798}
+main{max-width:1160px;margin:auto;padding:0 20px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:-26px;position:relative;z-index:4}
+.stats div,.menu-card,.booking,article,.pitch{background:#fff;border:1px solid #eadfd7;border-radius:20px;box-shadow:0 14px 35px #3d2b2010}
+.stats div{padding:19px}.stats strong{display:block;font-size:21px}.stats span{color:#85746a;font-size:13px}.section{padding:72px 0}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:20px}.section h2{font-size:clamp(34px,5vw,54px);letter-spacing:-.04em;margin:8px 0}
+.section-head p,.booking p,article p{color:#7c6d64;line-height:1.6}.menu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:28px}.menu-card{overflow:hidden}
+.dish-img{height:180px;background:linear-gradient(135deg,#f4d4b8,#dd8c54);display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:900;color:#7a3f20}
+.dish-body{padding:18px}.dish-row{display:flex;justify-content:space-between;gap:14px;align-items:start}.dish-body h3{margin:0 0 7px;font-size:19px}
+.dish-body p{color:#806f65;font-size:14px;line-height:1.5;margin:0 0 16px}.add{width:100%;border:1px solid #e8ddd4;background:#fff7f1;border-radius:12px;padding:10px;cursor:pointer;font-weight:800;color:#b95623}
+.booking{padding:28px;display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:center}.booking form{display:grid;gap:12px}
+input,select{width:100%;border:1px solid #dfd6d0;border-radius:12px;padding:13px;background:#fff}.twocol{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding-top:0}.grid3 article{padding:22px}.grid3 h3{font-size:21px;margin:8px 0}
+.pitch{padding:26px;display:flex;justify-content:space-between;gap:40px;align-items:center}.pitch ul{columns:2;margin:0;padding-left:20px;line-height:1.9}
+.cart{position:fixed;top:0;right:-430px;width:min(420px,92vw);height:100vh;background:#fff;z-index:20;padding:22px;box-shadow:-20px 0 60px #2d1d1530;transition:.25s}
+.cart.open{right:0}.cart-head{display:flex;justify-content:space-between;align-items:center;font-size:20px}.cart-head button,#modalClose{border:0;background:transparent;font-size:28px;cursor:pointer}
+.cart-line{display:flex;justify-content:space-between;gap:18px;padding:14px 0;border-bottom:1px solid #eee3dc}.cart-line small{color:#8a786d}
+.cart-total{display:flex;justify-content:space-between;padding:20px 0;font-size:20px}.wa{width:100%;border:0;background:#1eaa5b;color:white;border-radius:13px;padding:13px;font-weight:850;cursor:pointer}
+.cart small{display:block;color:#89786d;margin-top:10px}.overlay{position:fixed;inset:0;background:#211a1766;z-index:15;opacity:0;pointer-events:none;transition:.2s}
+.overlay.show{opacity:1;pointer-events:auto}.modal{position:fixed;inset:0;z-index:30;display:none;place-items:center;padding:20px}.modal.show{display:grid}
+.modal:before{content:"";position:absolute;inset:0;background:#211a1780}.modal-card{position:relative;z-index:2;background:white;width:min(600px,94vw);border-radius:20px;padding:24px}
+.modal-card>button{position:absolute;right:16px;top:12px}.modal pre{white-space:pre-wrap;background:#f8f4f0;border-radius:14px;padding:16px;line-height:1.55;color:#4d413a}
+footer{max-width:1160px;margin:0 auto;padding:0 20px 42px;display:flex;justify-content:space-between;color:#79685f;font-size:13px}
+@media(max-width:850px){.navlinks a{display:none}.hero-copy{padding-top:70px}.hero-card{position:relative;right:auto;bottom:auto;margin-top:40px;width:max-content}.stats,.menu-grid,.grid3{grid-template-columns:1fr 1fr}.booking{grid-template-columns:1fr}.pitch{display:block}.pitch ul{columns:1}.section-head{display:block}}
+@media(max-width:560px){.stats,.menu-grid,.grid3{grid-template-columns:1fr}.twocol{grid-template-columns:1fr}.actions{flex-direction:column;align-items:flex-start}.hero{padding-left:18px;padding-right:18px}.section{padding:50px 0}footer{display:block}footer span{display:block;margin-top:6px}}
+</style>
+</head>
+<body>
+<header class="hero">
+<nav><div class="brand">LITTLE IDLY</div><div class="navlinks"><a href="#menu">Menu</a><a href="#book">Book table</a><button id="cartBtn">Cart <span id="cartCount">0</span></button></div></nav>
+<div class="hero-copy">
+<div class="eyebrow">UNOFFICIAL CONCEPT DEMO - LITTLE IDLY</div>
+<h1>From hungry visitor to WhatsApp order in under a minute.</h1>
+<p>A concept showing how Little Idly could keep its free home-delivery WhatsApp flow while giving customers a faster cart-first experience before the message is sent.</p>
+<div class="actions"><a class="primary" href="#menu">Order food</a><a class="secondary" href="#book">Reserve a table</a></div>
+</div>
+<div class="hero-card"><div class="badge">Karama, Dubai</div><strong>Pure vegetarian South Indian</strong><span>Karama - Takeaway - Free home delivery</span></div>
+</header>
+<main>
+<section class="stats"><div><strong>1 tap</strong><span>to WhatsApp order</span></div><div><strong>24/7</strong><span>menu access</span></div><div><strong>Instant</strong><span>table request</span></div><div><strong>QR-ready</strong><span>for every table</span></div></section>
+<section id="menu" class="section"><div class="section-head"><div><div class="eyebrow">LIVE MENU</div><h2>Popular tonight</h2></div><p>Tap any dish to add it to the cart.</p></div><div id="menuGrid" class="menu-grid"></div></section>
+<section id="book" class="section booking">
+<div><div class="eyebrow">TABLE BOOKING</div><h2>Reserve without calling.</h2><p>Customer chooses date, time and party size. The restaurant receives a clean WhatsApp-style booking request.</p></div>
+<form id="bookingForm"><input id="guestName" placeholder="Your name" required><input id="guestPhone" placeholder="Phone / WhatsApp" required><div class="twocol"><input id="bookingDate" type="date" required><input id="bookingTime" type="time" required></div><select id="partySize"><option>2 guests</option><option>3 guests</option><option>4 guests</option><option>5 guests</option><option>6+ guests</option></select><button class="primary" type="submit">Create booking request</button></form>
+</section>
+<section class="section grid3">
+<article><div class="eyebrow">GOOGLE</div><h3>Turn happy diners into reviews</h3><p>After the visit, send a friendly review link automatically.</p></article>
+<article><div class="eyebrow">QR MENU</div><h3>No printed-menu friction</h3><p>Scan at the table, browse instantly and keep prices updated.</p></article>
+<article><div class="eyebrow">OWNER CONTROL</div><h3>Change prices in seconds</h3><p>Update dishes, availability, opening hours and promos from one dashboard.</p></article>
+</section>
+<section class="section pitch"><div><div class="eyebrow">WHAT WE SELL</div><h2>This demo becomes the restaurant's real system.</h2></div><ul><li>Custom branding and domain</li><li>Full editable menu</li><li>WhatsApp ordering</li><li>Table booking</li><li>Maps + reviews + analytics</li></ul></section>
+</main>
+<aside id="cart" class="cart"><div class="cart-head"><strong>Your order</strong><button id="closeCart">x</button></div><div id="cartItems"></div><div class="cart-total"><span>Total</span><strong id="cartTotal">AED 0.00</strong></div><button id="whatsappBtn" class="wa">Preview Little Idly WhatsApp order</button><small>Demo mode - no real message is sent.</small></aside>
+<div id="overlay" class="overlay"></div>
+<div id="modal" class="modal"><div class="modal-card"><button id="modalClose">x</button><div class="eyebrow">DEMO OUTPUT</div><h3 id="modalTitle">Ready</h3><pre id="modalText"></pre></div></div>
+<footer><strong>Little Idly concept demo</strong><span>Unofficial concept based on public restaurant information - not affiliated with or operated by Little Idly.</span></footer>
+<script>
+const menu=[{"id":1,"name":"Ghee Podi Thatte Idly","desc":"Thatte idly with ghee, sambar and chutneys","price":17.5,"icon":"GI"},{"id":2,"name":"Rava Masala Dosa","desc":"Semolina dosa with potato masala","price":23,"icon":"RD"},{"id":3,"name":"Little Idly Kondatam","desc":"Mini idlys tossed with podi","price":20,"icon":"LI"}];
+const cart=[];const $=s=>document.querySelector(s);const money=n=>"AED "+n.toFixed(2);
+function renderMenu(){$("#menuGrid").innerHTML=menu.map(d=>'<article class="menu-card"><div class="dish-img">'+d.icon+'</div><div class="dish-body"><div class="dish-row"><div><h3>'+d.name+'</h3><p>'+d.desc+'</p></div><strong>'+money(d.price)+'</strong></div><button class="add" data-id="'+d.id+'">Add to order</button></div></article>').join("");document.querySelectorAll(".add").forEach(b=>b.onclick=()=>addItem(Number(b.dataset.id)));}
+function addItem(id){const found=cart.find(x=>x.id===id);if(found)found.qty++;else cart.push({...menu.find(x=>x.id===id),qty:1});renderCart();openCart();}
+function renderCart(){$("#cartCount").textContent=cart.reduce((a,b)=>a+b.qty,0);$("#cartItems").innerHTML=cart.length?cart.map(x=>'<div class="cart-line"><div><strong>'+x.qty+' x '+x.name+'</strong><br><small>'+money(x.price)+' each</small></div><strong>'+money(x.price*x.qty)+'</strong></div>').join(""):"<p>Your cart is empty.</p>";$("#cartTotal").textContent=money(cart.reduce((a,b)=>a+b.price*b.qty,0));}
+function openCart(){$("#cart").classList.add("open");$("#overlay").classList.add("show");}
+function closeCart(){$("#cart").classList.remove("open");$("#overlay").classList.remove("show");}
+$("#cartBtn").onclick=openCart;$("#closeCart").onclick=closeCart;$("#overlay").onclick=closeCart;
+$("#whatsappBtn").onclick=()=>{if(!cart.length){alert("Add a dish first.");return;}const total=cart.reduce((a,b)=>a+b.price*b.qty,0);const lines=cart.map(x=>x.qty+" x "+x.name+" - "+money(x.price*x.qty)).join("\n");showModal("WhatsApp order preview","New order concept for Little Idly\n\n"+lines+"\n\nTotal: "+money(total)+"\n\nCustomer: Sarah\nDelivery: Karama\nPayment: Cash on delivery\n\nPlease confirm availability and ETA.");};
+$("#bookingForm").onsubmit=e=>{e.preventDefault();const name=$("#guestName").value,phone=$("#guestPhone").value,date=$("#bookingDate").value,time=$("#bookingTime").value,party=$("#partySize").value;showModal("Table request ready","New reservation request\n\nName: "+name+"\nWhatsApp: "+phone+"\nDate: "+date+"\nTime: "+time+"\nParty: "+party+"\n\nPlease confirm this table.");e.target.reset();};
+function showModal(title,text){closeCart();$("#modalTitle").textContent=title;$("#modalText").textContent=text;$("#modal").classList.add("show");$("#overlay").classList.add("show");}
+function closeModal(){$("#modal").classList.remove("show");$("#overlay").classList.remove("show");}
+$("#modalClose").onclick=closeModal;renderMenu();renderCart();
+</script>
+</body>
+</html>
